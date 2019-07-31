@@ -1,0 +1,9 @@
+face_recognition
+pymongo
+opencv-python
+pandas
+tkinter
+numpy
+dlib
+cmake
+arctic
