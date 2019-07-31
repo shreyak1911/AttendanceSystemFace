@@ -114,6 +114,8 @@ def start_attendance():  # Function to mark attendance in the list
     video_capture = cv2.VideoCapture(0)
     global no_of_stds, frame_number
     global saved_for_exel
+    dummy_append_data = []
+    global atten
     while True:
         # Grab a single frame of video
         ret, frame = video_capture.read()
@@ -139,14 +141,19 @@ def start_attendance():  # Function to mark attendance in the list
                 name = student_names[match.index(min_face_distance)]
                 
                 dummy_append_data = [student_name_mark, name]
-        dummy_append_data.append(atten)
-        saved_for_exel.append(dummy_append_data)
+        try:
+            dummy_append_data.append(atten)
+        
+            # print("no face found")
+            # saved_for_exel.append(dummy_append_data)
                 
                 # for i in range(0, no_of_stds):
                 #     if match[i]:
                 #         name = DATA[i + 1][1] #+ "_" + str(i)
                 #         DATA[i + 1][2] = "present"
-        face_names.append(name)
+            face_names.append(name)
+        except:
+            print("no face found")
 
         # Label the results
         for (top, right, bottom, left), name in zip(face_locations, face_names):
@@ -193,13 +200,19 @@ def function2():  # Function to mark attendance in the spreadsheet
         wb = xlwt.Workbook()
         ws = wb.add_sheet("My Sheet")
         final_exel=[]
-        for x in saved_for_exel:
-            if x not in final_exel:
-                final_exel.append(x)
+        for stu in db.students.find():
+            print(stu,end="########################")
+            final_exel.append([stu['roll_no'], stu['name'], stu['attendance']])
+            
+        # for x in saved_for_exel:
+        #     if x not in final_exel:
+        #         final_exel.append(x)s
         for i, row in enumerate(final_exel):
             for j, col in enumerate(row):
                 ws.write(i, j, col)
         wb.save(e2_2.get() + "_" + str(datetime.now().date()) + ".xls")
+
+        clear_all()
     
     def clear_all():
         db.students.update_many({}, {'$set':{'attendance': 'absent'}})

@@ -130,7 +130,7 @@ def login_sucess():
     login_success_screen.geometry("150x100")
     Label(login_success_screen, text="Login Success").pack()
     Button(login_success_screen, text="OK", command=delete_login_success).pack()
-    os.system("python face.py")
+    os.system("python3 face.py")
 
 
 
